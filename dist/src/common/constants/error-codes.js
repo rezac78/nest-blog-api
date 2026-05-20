@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ERROR_CODES = void 0;
+exports.ERROR_CODES = {
+    AUTH: {
+        INVALID_OTP: "AUTH_001",
+        UNAUTHORIZED: "AUTH_002",
+        FORBIDDEN: "AUTH_003",
+    },
+    USER: {
+        NOT_FOUND: "USER_001",
+        SELF_ROLE_CHANGE: "USER_002",
+        MIN_ADMIN_REQUIRED: "USER_003",
+    },
+    SYSTEM: {
+        INTERNAL_ERROR: "SYS_001",
+        VALIDATION_ERROR: "SYS_002",
+        DATABASE_ERROR: "SYS_003",
+    },
+};
+//# sourceMappingURL=error-codes.js.map

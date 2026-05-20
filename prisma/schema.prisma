@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String  @id @default(uuid())
+  mobile       String? @unique
+  email        String? @unique
+  passwordHash String?
+
+  firstName String?
+  lastName  String?
+  gender    String?
+
+  birthDate            DateTime?
+  avatar               String?
+  username             String?   @unique
+  githubLink           String?
+  linkedInLink         String?
+  country              String?
+  city                 String?
+  jobStatus            String?
+  description          String?
+  whatIveBeenWorkingOn String?
+
+  isActive         Boolean   @default(true)
+  isMobileVerified Boolean   @default(false)
+  phoneVerifiedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roles         UserRole[]
+  refreshTokens RefreshToken[]
+
+  @@index([firstName])
+  @@index([lastName])
+}
+
+enum RoleType {
+  admin
+  student
+  user
+}
+
+model Role {
+  id   String   @id @default(uuid())
+  name RoleType @unique
+
+  users UserRole[]
+}
+
+model UserRole {
+  id String @id @default(uuid())
+
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, roleId])
+}
+
+model RefreshToken {
+  id String @id @default(uuid())
+
+  userId String
+  token  String @unique
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+
+  user      User    @relation(fields: [userId], references: [id])
+  isRevoked Boolean @default(false)
+
+  @@index([userId])
+}
+
+model OtpCode {
+  id        String   @id @default(uuid())
+  mobile    String
+  codeHash  String
+  isUsed    Boolean  @default(false)
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([mobile, createdAt])
+  @@index([mobile, isUsed])
+}
+
+model About {
+  id               String  @id @default(uuid())
+  aboutHtml        String  @db.Text
+  resumeFileBase64 String? @db.Text
+  resumeLink       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jobs       AboutJob[]
+  educations AboutEducation[]
+}
+
+model AboutJob {
+  id      String @id @default(uuid())
+  aboutId String
+
+  position         String   @default("")
+  company          String   @default("")
+  companyURL       String?
+  image            String?
+  location         String   @default("")
+  locationType     String   @default("")
+  positionType     String   @default("")
+  startDate        String   @default("")
+  endDate          String?  @default("")
+  positionId       String   @default("")
+  link             String   @default("")
+  responsibilities String[] @default([])
+
+  about About @relation(fields: [aboutId], references: [id], onDelete: Cascade)
+
+  @@index([aboutId])
+}
+
+model AboutEducation {
+  id      String @id @default(uuid())
+  aboutId String
+
+  university String  @default("")
+  major      String  @default("")
+  image      String?
+  location   String  @default("")
+  degree     String  @default("")
+  startYear  String  @default("")
+  endYear    String  @default("")
+  link       String  @default("")
+
+  about About @relation(fields: [aboutId], references: [id], onDelete: Cascade)
+
+  @@index([aboutId])
+}
