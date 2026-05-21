@@ -11,10 +11,11 @@ export declare class UsersController {
     }): Promise<{
         id: string;
         mobile: string | null;
-        email: string | null;
-        username: string | null;
         firstName: string | null;
         lastName: string | null;
+        email: string | null;
+        createdAt: Date;
+        username: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;
@@ -25,7 +26,6 @@ export declare class UsersController {
         jobStatus: string | null;
         description: string | null;
         whatIveBeenWorkingOn: string | null;
-        createdAt: Date;
     }>;
     updateProfile(user: {
         userId: string;
@@ -35,10 +35,11 @@ export declare class UsersController {
         data: {
             id: string;
             mobile: string | null;
-            email: string | null;
-            username: string | null;
             firstName: string | null;
             lastName: string | null;
+            email: string | null;
+            createdAt: Date;
+            username: string | null;
             gender: string | null;
             birthDate: Date | null;
             avatar: string | null;
@@ -49,17 +50,16 @@ export declare class UsersController {
             jobStatus: string | null;
             description: string | null;
             whatIveBeenWorkingOn: string | null;
-            createdAt: Date;
         };
     }>;
     getUsers(): Promise<{
         id: string;
         mobile: string | null;
-        email: string | null;
         firstName: string | null;
         lastName: string | null;
-        isActive: boolean;
+        email: string | null;
         createdAt: Date;
+        isActive: boolean;
         roles: {
             id: string;
             userId: string;
@@ -69,11 +69,12 @@ export declare class UsersController {
     getUsersById(id: string): Promise<{
         id: string;
         mobile: string | null;
-        email: string | null;
-        username: string | null;
-        passwordHash: string | null;
         firstName: string | null;
         lastName: string | null;
+        email: string | null;
+        createdAt: Date;
+        username: string | null;
+        passwordHash: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;
@@ -87,17 +88,17 @@ export declare class UsersController {
         isActive: boolean;
         isMobileVerified: boolean;
         phoneVerifiedAt: Date | null;
-        createdAt: Date;
         updatedAt: Date;
     }>;
     updateUser(id: string, dto: UpdateUserDto): Promise<{
         id: string;
         mobile: string | null;
-        email: string | null;
-        username: string | null;
-        passwordHash: string | null;
         firstName: string | null;
         lastName: string | null;
+        email: string | null;
+        createdAt: Date;
+        username: string | null;
+        passwordHash: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;
@@ -111,7 +112,6 @@ export declare class UsersController {
         isActive: boolean;
         isMobileVerified: boolean;
         phoneVerifiedAt: Date | null;
-        createdAt: Date;
         updatedAt: Date;
     }>;
     deleteUser(id: string): Promise<{

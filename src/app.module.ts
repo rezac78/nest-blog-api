@@ -9,6 +9,7 @@ import { PrismaModule } from "database/prisma/prisma.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { UsersModule } from "./modules/users/users.module";
 import { UploadsModule } from "./modules/uploads/uploads.module";
+import { ProjectModule } from "./modules/project/project.module";
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UploadsModule } from "./modules/uploads/uploads.module";
     AuthModule,
     UsersModule,
     UploadsModule,
+    ProjectModule,
     ThrottlerModule.forRoot({
       throttlers: [
         {

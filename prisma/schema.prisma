@@ -148,3 +148,42 @@ model AboutEducation {
 
   @@index([aboutId])
 }
+model Project {
+  id               String        @id @default(uuid())
+  title            String
+  shortDescription String?
+  longDescription  String?
+  slug             String        @unique
+  image            String?
+
+  tools            ProjectTool[]
+  links            ProjectLink[]
+
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([title])
+}
+model Tool {
+  id        String        @id @default(uuid())
+  name      String
+  projects  ProjectTool[]
+}
+
+model ProjectTool {
+  projectId String
+  toolId    String
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tool      Tool    @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, toolId])
+}
+model ProjectLink {
+  id        String   @id @default(uuid())
+  name      String
+  url       String
+
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}

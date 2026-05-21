@@ -18,6 +18,7 @@ const prisma_module_1 = require("../database/prisma/prisma.module");
 const auth_module_1 = require("./modules/auth/auth.module");
 const users_module_1 = require("./modules/users/users.module");
 const uploads_module_1 = require("./modules/uploads/uploads.module");
+const project_module_1 = require("./modules/project/project.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -36,6 +37,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
             uploads_module_1.UploadsModule,
+            project_module_1.ProjectModule,
             throttler_1.ThrottlerModule.forRoot({
                 throttlers: [
                     {

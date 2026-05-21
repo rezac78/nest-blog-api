@@ -8,10 +8,11 @@ export declare class UsersService {
     getProfile(userId: string): Promise<{
         id: string;
         mobile: string | null;
-        email: string | null;
-        username: string | null;
         firstName: string | null;
         lastName: string | null;
+        email: string | null;
+        createdAt: Date;
+        username: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;
@@ -22,17 +23,17 @@ export declare class UsersService {
         jobStatus: string | null;
         description: string | null;
         whatIveBeenWorkingOn: string | null;
-        createdAt: Date;
     }>;
     updateProfile(userId: string, dto: UpdateProfileDto): Promise<{
         message: string;
         data: {
             id: string;
             mobile: string | null;
-            email: string | null;
-            username: string | null;
             firstName: string | null;
             lastName: string | null;
+            email: string | null;
+            createdAt: Date;
+            username: string | null;
             gender: string | null;
             birthDate: Date | null;
             avatar: string | null;
@@ -43,17 +44,16 @@ export declare class UsersService {
             jobStatus: string | null;
             description: string | null;
             whatIveBeenWorkingOn: string | null;
-            createdAt: Date;
         };
     }>;
     getUsers(): Promise<{
         id: string;
         mobile: string | null;
-        email: string | null;
         firstName: string | null;
         lastName: string | null;
-        isActive: boolean;
+        email: string | null;
         createdAt: Date;
+        isActive: boolean;
         roles: {
             id: string;
             userId: string;
@@ -63,11 +63,12 @@ export declare class UsersService {
     getUserById(id: string): Promise<{
         id: string;
         mobile: string | null;
-        email: string | null;
-        username: string | null;
-        passwordHash: string | null;
         firstName: string | null;
         lastName: string | null;
+        email: string | null;
+        createdAt: Date;
+        username: string | null;
+        passwordHash: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;
@@ -81,17 +82,17 @@ export declare class UsersService {
         isActive: boolean;
         isMobileVerified: boolean;
         phoneVerifiedAt: Date | null;
-        createdAt: Date;
         updatedAt: Date;
     }>;
     updateUser(id: string, dto: UpdateUserDto): Promise<{
         id: string;
         mobile: string | null;
-        email: string | null;
-        username: string | null;
-        passwordHash: string | null;
         firstName: string | null;
         lastName: string | null;
+        email: string | null;
+        createdAt: Date;
+        username: string | null;
+        passwordHash: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;
@@ -105,7 +106,6 @@ export declare class UsersService {
         isActive: boolean;
         isMobileVerified: boolean;
         phoneVerifiedAt: Date | null;
-        createdAt: Date;
         updatedAt: Date;
     }>;
     deleteUser(id: string): Promise<{

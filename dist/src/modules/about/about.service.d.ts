@@ -8,9 +8,9 @@ export declare class AboutService {
             id: string;
             link: string;
             position: string;
+            image: string | null;
             company: string;
             companyURL: string | null;
-            image: string | null;
             location: string;
             locationType: string;
             positionType: string;
@@ -45,9 +45,9 @@ export declare class AboutService {
             id: string;
             link: string;
             position: string;
+            image: string | null;
             company: string;
             companyURL: string | null;
-            image: string | null;
             location: string;
             locationType: string;
             positionType: string;
