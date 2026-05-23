@@ -6,20 +6,28 @@ import {
 } from "@nestjs/common";
 import { PrismaService } from "database/prisma/prisma.service";
 import { CreateToolDto } from "./dto/create-tool.dto";
+import { generateSlug } from "src/common/utils/slug.util";
 
 @Injectable()
 export class ToolsService {
   constructor(private prisma: PrismaService) {}
   async Create(@Body() dto: CreateToolDto) {
     const slug = generateSlug(dto.name);
-
     try {
-      return await this.prisma.tool.create(dto);
-    } catch (err) {
-      if (err.code === "P2002") {
-        throw new ConflictException("Tool with this slug already exists.");
+      return this.prisma.tool.create({
+        data: {
+          name: dto.name,
+          slug,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        throw new ConflictException("Slug already exists");
       }
-      throw err;
+      throw error;
     }
   }
   async findAll() {
