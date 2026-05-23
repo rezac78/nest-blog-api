@@ -10,6 +10,7 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { UsersModule } from "./modules/users/users.module";
 import { UploadsModule } from "./modules/uploads/uploads.module";
 import { ProjectModule } from "./modules/project/project.module";
+import { ToolsModule } from "./modules/tools/tools.module";
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ProjectModule } from "./modules/project/project.module";
     UsersModule,
     UploadsModule,
     ProjectModule,
+    ToolsModule,
     ThrottlerModule.forRoot({
       throttlers: [
         {
