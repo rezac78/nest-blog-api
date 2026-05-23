@@ -9,12 +9,12 @@ export declare class UploadsService {
     updateUserAvatar(userId: string, avatarPath: string): Promise<{
         id: string;
         mobile: string | null;
-        firstName: string | null;
-        lastName: string | null;
-        email: string | null;
         createdAt: Date;
+        email: string | null;
         username: string | null;
         passwordHash: string | null;
+        firstName: string | null;
+        lastName: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;

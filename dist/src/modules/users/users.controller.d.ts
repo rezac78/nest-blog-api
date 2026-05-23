@@ -11,11 +11,11 @@ export declare class UsersController {
     }): Promise<{
         id: string;
         mobile: string | null;
+        createdAt: Date;
+        email: string | null;
+        username: string | null;
         firstName: string | null;
         lastName: string | null;
-        email: string | null;
-        createdAt: Date;
-        username: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;
@@ -35,11 +35,11 @@ export declare class UsersController {
         data: {
             id: string;
             mobile: string | null;
+            createdAt: Date;
+            email: string | null;
+            username: string | null;
             firstName: string | null;
             lastName: string | null;
-            email: string | null;
-            createdAt: Date;
-            username: string | null;
             gender: string | null;
             birthDate: Date | null;
             avatar: string | null;
@@ -55,10 +55,10 @@ export declare class UsersController {
     getUsers(): Promise<{
         id: string;
         mobile: string | null;
+        createdAt: Date;
+        email: string | null;
         firstName: string | null;
         lastName: string | null;
-        email: string | null;
-        createdAt: Date;
         isActive: boolean;
         roles: {
             id: string;
@@ -69,12 +69,12 @@ export declare class UsersController {
     getUsersById(id: string): Promise<{
         id: string;
         mobile: string | null;
-        firstName: string | null;
-        lastName: string | null;
-        email: string | null;
         createdAt: Date;
+        email: string | null;
         username: string | null;
         passwordHash: string | null;
+        firstName: string | null;
+        lastName: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;
@@ -93,12 +93,12 @@ export declare class UsersController {
     updateUser(id: string, dto: UpdateUserDto): Promise<{
         id: string;
         mobile: string | null;
-        firstName: string | null;
-        lastName: string | null;
-        email: string | null;
         createdAt: Date;
+        email: string | null;
         username: string | null;
         passwordHash: string | null;
+        firstName: string | null;
+        lastName: string | null;
         gender: string | null;
         birthDate: Date | null;
         avatar: string | null;

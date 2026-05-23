@@ -167,6 +167,8 @@ model Project {
 model Tool {
   id        String        @id @default(uuid())
   name      String
+  slug      String        @unique
+  image     String?
   projects  ProjectTool[]
 }
 

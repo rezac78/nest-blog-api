@@ -11,6 +11,8 @@ export declare class ProjectService {
             tool: {
                 id: string;
                 name: string;
+                slug: string;
+                image: string | null;
             };
         } & {
             toolId: string;
@@ -37,6 +39,8 @@ export declare class ProjectService {
             tool: {
                 id: string;
                 name: string;
+                slug: string;
+                image: string | null;
             };
         } & {
             toolId: string;
@@ -63,6 +67,8 @@ export declare class ProjectService {
             tool: {
                 id: string;
                 name: string;
+                slug: string;
+                image: string | null;
             };
         } & {
             toolId: string;
@@ -89,6 +95,8 @@ export declare class ProjectService {
             tool: {
                 id: string;
                 name: string;
+                slug: string;
+                image: string | null;
             };
         } & {
             toolId: string;

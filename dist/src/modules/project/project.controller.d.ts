@@ -9,6 +9,8 @@ export declare class ProjectController {
             tool: {
                 id: string;
                 name: string;
+                slug: string;
+                image: string | null;
             };
         } & {
             toolId: string;
@@ -35,6 +37,8 @@ export declare class ProjectController {
             tool: {
                 id: string;
                 name: string;
+                slug: string;
+                image: string | null;
             };
         } & {
             toolId: string;
@@ -61,6 +65,8 @@ export declare class ProjectController {
             tool: {
                 id: string;
                 name: string;
+                slug: string;
+                image: string | null;
             };
         } & {
             toolId: string;
@@ -87,6 +93,8 @@ export declare class ProjectController {
             tool: {
                 id: string;
                 name: string;
+                slug: string;
+                image: string | null;
             };
         } & {
             toolId: string;
