@@ -14,31 +14,47 @@ export class ProjectService {
     private prisma: PrismaService,
     private uploadsService: UploadsService,
   ) {}
-  async create(dto: CreateProjectDto) {
+  async create(dto: CreateProjectDto, file?: Express.Multer.File) {
     const { tools, links, ...projectData } = dto;
-    return this.prisma.project.create({
-      data: {
-        ...projectData,
+    let imagePath: string | undefined;
 
-        links: links
-          ? {
-              create: links,
-            }
-          : undefined,
+    if (file) {
+      imagePath = await this.uploadsService.processImage(file, "tool", 800);
+    }
+    try {
+      const project = await this.prisma.project.create({
+        data: {
+          ...projectData,
+          ...(imagePath && { image: imagePath }),
+          links: links
+            ? {
+                create: links,
+              }
+            : undefined,
 
-        tools: tools
-          ? {
-              create: tools.map((toolId) => ({
-                tool: { connect: { id: toolId } },
-              })),
-            }
-          : undefined,
-      },
-      include: {
-        links: true,
-        tools: { include: { tool: true } },
-      },
-    });
+          tools: tools
+            ? {
+                create: tools.map((toolId) => ({
+                  tool: { connect: { id: toolId } },
+                })),
+              }
+            : undefined,
+        },
+        include: {
+          links: true,
+          tools: { include: { tool: true } },
+        },
+      });
+      return {
+        message: "created successfully",
+        data: project,
+      };
+    } catch (err) {
+      if (imagePath) {
+        this.uploadsService.deleteFile(imagePath);
+      }
+      console.error(err);
+    }
   }
   async findAll() {
     return this.prisma.project.findMany({
@@ -55,9 +71,9 @@ export class ProjectService {
       },
     });
   }
-  async findOne(id: string) {
+  async findOne(slug: string) {
     return this.prisma.project.findUnique({
-      where: { id },
+      where: { slug },
       include: {
         links: true,
         tools: {
@@ -67,35 +83,59 @@ export class ProjectService {
     });
   }
 
-  async update(id: string, dto: UpdateProjectDto) {
+  async update(
+    slug: string,
+    dto: UpdateProjectDto,
+    file?: Express.Multer.File,
+  ) {
+    const project = await this.findOne(slug);
     const { tools, links, ...projectData } = dto;
 
-    return this.prisma.project.update({
-      where: { id },
-      data: {
-        ...projectData,
+    let imagePath: string | undefined;
 
-        links: links
-          ? {
-              deleteMany: {},
-              create: links,
-            }
-          : undefined,
+    if (file) {
+      imagePath = await this.uploadsService.processImage(file, "tool", 800);
+    }
+    try {
+      const updatedProject = await this.prisma.project.update({
+        where: { id: project.id },
+        data: {
+          ...projectData,
+          ...(imagePath && { image: imagePath }),
+          links: links
+            ? {
+                deleteMany: {},
+                create: links,
+              }
+            : undefined,
 
-        tools: tools
-          ? {
-              deleteMany: {},
-              create: tools.map((toolId) => ({
-                tool: { connect: { id: toolId } },
-              })),
-            }
-          : undefined,
-      },
-      include: {
-        links: true,
-        tools: { include: { tool: true } },
-      },
-    });
+          tools: tools
+            ? {
+                deleteMany: {},
+                create: tools.map((toolId) => ({
+                  tool: { connect: { id: toolId } },
+                })),
+              }
+            : undefined,
+        },
+        include: {
+          links: true,
+          tools: { include: { tool: true } },
+        },
+      });
+      if (imagePath && updatedProject.image) {
+        this.uploadsService.deleteFile(updatedProject.image);
+      }
+      return {
+        message: "Update successfully",
+        data: updatedProject,
+      };
+    } catch (error) {
+      if (imagePath) {
+        this.uploadsService.deleteFile(imagePath);
+      }
+      console.error(error);
+    }
   }
   async uploadImage(id: string, file: Express.Multer.File) {
     const project = await this.prisma.project.findUnique({

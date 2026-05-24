@@ -27,41 +27,39 @@ export class ProjectController {
   @Post()
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  create(@Body() dto: CreateProjectDto) {
-    return this.projectService.create(dto);
+  @UseInterceptors(FileInterceptor("image", imageUploadConfig))
+  create(
+    @Body() dto: CreateProjectDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.projectService.create(dto, file);
   }
   @Get()
   findAll() {
     return this.projectService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.projectService.findOne(id);
+  @Get(":slug")
+  findOne(@Param("slug") slug: string) {
+    return this.projectService.findOne(slug);
   }
 
-  @Patch(":id")
+  @Patch(":slug")
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  update(@Param("id") id: string, @Body() dto: UpdateProjectDto) {
-    return this.projectService.update(id, dto);
-  }
-
-  @Post(":id/image")
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
   @UseInterceptors(FileInterceptor("image", imageUploadConfig))
-  uploadImage(
-    @Param("id") id: string,
-    @UploadedFile() file: Express.Multer.File,
+  update(
+    @Param("slug") slug: string,
+    @Body() dto: UpdateProjectDto,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.projectService.uploadImage(id, file);
+    return this.projectService.update(slug, dto, file);
   }
 
-  @Delete(":id")
+  @Delete(":slug")
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  remove(@Param("id") id: string) {
-    return this.projectService.remove(id);
+  remove(@Param("slug") slug: string) {
+    return this.projectService.remove(slug);
   }
 }
