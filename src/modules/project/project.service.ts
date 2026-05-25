@@ -14,25 +14,27 @@ export class ProjectService {
     private prisma: PrismaService,
     private uploadsService: UploadsService,
   ) {}
+
   async create(dto: CreateProjectDto, file?: Express.Multer.File) {
     const { tools, links, ...projectData } = dto;
+
     let imagePath: string | undefined;
 
     if (file) {
-      imagePath = await this.uploadsService.processImage(file, "tool", 800);
+      imagePath = await this.uploadsService.processImage(file, "project", 800);
     }
+
     try {
       const project = await this.prisma.project.create({
         data: {
           ...projectData,
           ...(imagePath && { image: imagePath }),
-          links: links
+          links: links?.length
             ? {
                 create: links,
               }
             : undefined,
-
-          tools: tools
+          tools: tools?.length
             ? {
                 create: tools.map((toolId) => ({
                   tool: { connect: { id: toolId } },
@@ -42,27 +44,48 @@ export class ProjectService {
         },
         include: {
           links: true,
-          tools: { include: { tool: true } },
+          tools: {
+            include: {
+              tool: true,
+            },
+          },
         },
       });
+
       return {
+        success: true,
         message: "created successfully",
         data: project,
       };
-    } catch (err) {
+    } catch (error) {
       if (imagePath) {
         this.uploadsService.deleteFile(imagePath);
       }
-      console.error(err);
+
+      throw error;
     }
   }
+
   async findAll() {
-    return this.prisma.project.findMany({
+    const projects = await this.prisma.project.findMany({
       include: {
-        links: true,
+        links: {
+          select: {
+            id: true,
+            name: true,
+            url: true,
+          },
+        },
         tools: {
           include: {
-            tool: true,
+            tool: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                image: true,
+              },
+            },
           },
         },
       },
@@ -70,17 +93,47 @@ export class ProjectService {
         createdAt: "desc",
       },
     });
+
+    return projects.map((project) => ({
+      ...project,
+      tools: project.tools.map((item) => item.tool),
+    }));
   }
+
   async findOne(slug: string) {
-    return this.prisma.project.findUnique({
+    const project = await this.prisma.project.findUnique({
       where: { slug },
       include: {
-        links: true,
+        links: {
+          select: {
+            id: true,
+            name: true,
+            url: true,
+          },
+        },
         tools: {
-          include: { tool: true },
+          include: {
+            tool: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                image: true,
+              },
+            },
+          },
         },
       },
     });
+
+    if (!project) {
+      throw new NotFoundException(`Project ${slug} not found`);
+    }
+
+    return {
+      ...project,
+      tools: project.tools.map((item) => item.tool),
+    };
   }
 
   async update(
@@ -94,22 +147,22 @@ export class ProjectService {
     let imagePath: string | undefined;
 
     if (file) {
-      imagePath = await this.uploadsService.processImage(file, "tool", 800);
+      imagePath = await this.uploadsService.processImage(file, "project", 800);
     }
+
     try {
       const updatedProject = await this.prisma.project.update({
         where: { id: project.id },
         data: {
           ...projectData,
           ...(imagePath && { image: imagePath }),
-          links: links
+          links: links?.length
             ? {
                 deleteMany: {},
                 create: links,
               }
             : undefined,
-
-          tools: tools
+          tools: tools?.length
             ? {
                 deleteMany: {},
                 create: tools.map((toolId) => ({
@@ -120,13 +173,20 @@ export class ProjectService {
         },
         include: {
           links: true,
-          tools: { include: { tool: true } },
+          tools: {
+            include: {
+              tool: true,
+            },
+          },
         },
       });
-      if (imagePath && updatedProject.image) {
-        this.uploadsService.deleteFile(updatedProject.image);
+
+      if (imagePath && project.image) {
+        this.uploadsService.deleteFile(project.image);
       }
+
       return {
+        success: true,
         message: "Update successfully",
         data: updatedProject,
       };
@@ -134,9 +194,11 @@ export class ProjectService {
       if (imagePath) {
         this.uploadsService.deleteFile(imagePath);
       }
-      console.error(error);
+
+      throw error;
     }
   }
+
   async uploadImage(id: string, file: Express.Multer.File) {
     const project = await this.prisma.project.findUnique({
       where: { id },
@@ -145,6 +207,7 @@ export class ProjectService {
     if (!project) {
       throw new NotFoundException("project not found");
     }
+
     if (!file) {
       throw new BadRequestException("Image file is required");
     }
@@ -154,8 +217,9 @@ export class ProjectService {
       "project",
       800,
     );
+
     if (project.image) {
-      await this.uploadsService.deleteFile(project.image);
+      this.uploadsService.deleteFile(project.image);
     }
 
     return this.prisma.project.update({
@@ -165,9 +229,22 @@ export class ProjectService {
       },
     });
   }
-  async remove(id: string) {
-    return this.prisma.project.delete({
-      where: { id },
+
+  async remove(slug: string) {
+    const project = await this.findOne(slug);
+
+    const deletedProject = await this.prisma.project.delete({
+      where: { id: project.id },
     });
+
+    if (project.image) {
+      this.uploadsService.deleteFile(project.image);
+    }
+
+    return {
+      success: true,
+      message: "Deleted successfully",
+      data: deletedProject,
+    };
   }
 }
